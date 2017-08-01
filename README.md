@@ -1,6 +1,6 @@
 # Docxelixir
 
-**TODO: Add description**
+Docxelixir reads docx files and can extract paragraphs (texts in general) and table of contents.
 
 ## Installation
 
@@ -10,12 +10,15 @@ by adding `docxelixir` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:docxelixir, "~> 0.1.0"}
+    {:docxelixir, "~> 1.0.0"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/docxelixir](https://hexdocs.pm/docxelixir).
+## Usage
 
+```elixir
+  # Reading all paragraphs of samples/demo.docx
+  Docxelixir.read_paragraphs('samples/demo.docx')
+  # ['paragraph 1', 'paragraph 2', '...']
+```
