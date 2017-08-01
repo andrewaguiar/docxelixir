@@ -6,9 +6,10 @@ defmodule Docxelixir do
   @doc """
   Reads all paragraphs from a given docx file
   """
+  @spec read_paragraphs(String.t) :: [String.t] | {:error, atom}
   def read_paragraphs(file) do
     case read(file) do
-      { :ok, doc } ->
+      {:ok, doc} ->
         doc
         |> extract_paragraphs
         |> extract_paragraphs_texts
@@ -40,16 +41,16 @@ defmodule Docxelixir do
 
   defp read(file) do
     case :zip.unzip(file, [:memory]) do
-      { :ok, inner_files } ->
+      {:ok, inner_files} ->
         doc = inner_files
         |> Enum.find(fn { name, _ } -> name == 'word/document.xml' end)
         |> case do { 'word/document.xml', doc } -> doc end
         |> :binary.bin_to_list
         |> :xmerl_scan.string
 
-        { :ok, doc }
+        {:ok, doc}
       error ->
-        { :error, error }
+        error
     end
   end
 end

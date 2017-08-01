@@ -3,7 +3,7 @@ defmodule DocxelixirTest do
   doctest Docxelixir
 
   test "reads all paragraphs" do
-    result = Docxelixir.read_paragraphs('samples/demo-super-simple.docx')
+    result = Docxelixir.read_paragraphs('samples/demo.docx')
 
     assert result == [
       "Demonstration of DOCX support in calibre",
