@@ -10,7 +10,13 @@ defmodule Docxelixir.Mixfile do
       description: "reads docx document files (paragraphs, tables)",
       source_url: "https://github.com/andrewaguiar/docxelixir",
       package: package(),
-      deps: []
+      deps: deps()
+    ]
+  end
+
+  defp deps() do
+    [
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
