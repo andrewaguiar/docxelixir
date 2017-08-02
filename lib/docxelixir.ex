@@ -19,12 +19,14 @@ defmodule Docxelixir do
     end
   end
 
-  defp extract_paragraphs({ xml_elements, _ }) do
+  defp extract_paragraphs({xml_elements, _}) do
     :xmerl_xpath.string('//w:document//w:body//w:p', xml_elements)
   end
 
   defp extract_paragraphs_texts(paragraphs) do
-    Enum.map(paragraphs, fn paragraph -> :xmerl_xpath.string('w:r//text()|w:hyperlink/w:r//text()', paragraph) end)
+    Enum.map(paragraphs, fn paragraph ->
+      :xmerl_xpath.string('w:r//text()|w:hyperlink/w:r//text()', paragraph)
+    end)
   end
 
   defp extract_paragraphs_texts_nodes(text_nodes) do
@@ -43,8 +45,8 @@ defmodule Docxelixir do
     case :zip.unzip(file, [:memory]) do
       {:ok, inner_files} ->
         doc = inner_files
-        |> Enum.find(fn { name, _ } -> name == 'word/document.xml' end)
-        |> case do { 'word/document.xml', doc } -> doc end
+        |> Enum.find(fn {name, _} -> name == 'word/document.xml' end)
+        |> case do {'word/document.xml', doc} -> doc end
         |> :binary.bin_to_list
         |> :xmerl_scan.string
 
