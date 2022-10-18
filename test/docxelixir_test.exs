@@ -29,9 +29,6 @@ defmodule DocxelixirTest do
 
     assert result ==
              {:error, :no_parser_found,
-              [
-                %Zstream.Unzip.Error{message: "Unexpected end of input"},
-                %MatchError{term: {:error, {:error, :einval}}}
-              ]}
+              [%Zstream.Unzip.Error{message: "Unexpected end of input"}]}
   end
 end

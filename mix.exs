@@ -17,7 +17,7 @@ defmodule Docxelixir.Mixfile do
   defp deps() do
     [
       {:sweet_xml, "~> 0.7.1"},
-      {:zstream, "~> 0.6"},
+      {:zstream, "~> 0.6", github: "ananthakumaran/zstream", branch: "master"},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
     ]

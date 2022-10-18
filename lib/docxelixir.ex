@@ -10,7 +10,7 @@ defmodule Docxelixir do
   """
   @spec read_paragraphs(String.t()) :: [String.t()] | {:error, atom}
   def read_paragraphs(file) do
-    case first_non_throwing(file, [], [&read_zip/1, &read_zstream/1]) do
+    case first_non_throwing(file, [], [&read_zstream/1]) do
       {:ok, doc} ->
         doc
         |> parse()
@@ -31,23 +31,6 @@ defmodule Docxelixir do
       {:ok, val}
     rescue
       e -> first_non_throwing(file, [e | errors], rest)
-    end
-  end
-
-  defp read_zip(file) do
-    case :zip.unzip(file, [:memory]) do
-      {:ok, inner_files} ->
-        doc =
-          inner_files
-          |> Enum.find(fn {name, _} -> name == 'word/document.xml' end)
-          |> case do
-            {'word/document.xml', doc} -> doc
-          end
-
-        {:ok, doc}
-
-      error ->
-        {:error, error}
     end
   end
 

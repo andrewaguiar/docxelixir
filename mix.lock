@@ -4,5 +4,5 @@
   "earmark": {:hex, :earmark, "1.2.3", "206eb2e2ac1a794aa5256f3982de7a76bf4579ff91cb28d0e17ea2c9491e46a4", [:mix], [], "hexpm", "3b1dcad3067985dd8618c38399a8ee9c4e652d52a17a4aae7a6d6fc4fcc24856"},
   "ex_doc": {:hex, :ex_doc, "0.16.2", "3b3e210ebcd85a7c76b4e73f85c5640c011d2a0b2f06dcdf5acdb2ae904e5084", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm", "b6fb4aef8125c62e6b6a7d7507eff70f376a7050c7745af11f08333ea9beebd3"},
   "sweet_xml": {:hex, :sweet_xml, "0.7.3", "debb256781c75ff6a8c5cbf7981146312b66f044a2898f453709a53e5031b45b", [:mix], [], "hexpm", "e110c867a1b3fe74bfc7dd9893aa851f0eed5518d0d7cad76d7baafd30e4f5ba"},
-  "zstream": {:hex, :zstream, "0.6.3", "caa544e98ef639c84b5903b55005eac67c6c059000154534eb6cd4e8e3bbeb67", [:mix], [], "hexpm", "269116bf8cfc22c6a234057aad71ac1cfd5f76e78a228c09919e7ca20c868014"},
+  "zstream": {:git, "https://github.com/ananthakumaran/zstream.git", "fed53b8605ab47e6202fd20f341d959a2fd9f132", [branch: "master"]},
 }
