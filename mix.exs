@@ -16,6 +16,8 @@ defmodule Docxelixir.Mixfile do
 
   defp deps() do
     [
+      {:sweet_xml, "~> 0.7.1"},
+      {:zstream, "~> 0.6"},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
     ]
@@ -29,5 +31,9 @@ defmodule Docxelixir.Mixfile do
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/andrewaguiar/docxelixir"}
     ]
+  end
+
+  def application do
+    [extra_applications: [:xmerl, :zstream]]
   end
 end

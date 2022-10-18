@@ -3,56 +3,79 @@ defmodule Docxelixir do
   Reads paragraphs and tables from a docx document
   """
 
+  import SweetXml
+
   @doc """
   Reads all paragraphs from a given docx file
   """
-  @spec read_paragraphs(String.t) :: [String.t] | {:error, atom}
+  @spec read_paragraphs(String.t()) :: [String.t()] | {:error, atom}
   def read_paragraphs(file) do
-    case read(file) do
+    case first_non_throwing(file, [], [&read_zip/1, &read_zstream/1]) do
       {:ok, doc} ->
         doc
-        |> extract_paragraphs
-        |> extract_paragraphs_texts
-        |> extract_paragraphs_texts_nodes
+        |> parse()
+        |> xpath(~x"//w:document//w:body//w:p"l)
+        |> Enum.map(&xpath(&1, ~x"w:r//text()|w:hyperlink/w:r//text()"l))
+        |> Enum.map(&Enum.join(&1))
+
       error ->
         error
     end
   end
 
-  defp extract_paragraphs({xml_elements, _}) do
-    :xmerl_xpath.string('//w:document//w:body//w:p', xml_elements)
+  defp first_non_throwing(_file, errors, []), do: {:error, :no_parser_found, errors}
+
+  defp first_non_throwing(file, errors, [fun | rest]) do
+    try do
+      {:ok, val} = fun.(file)
+      {:ok, val}
+    rescue
+      e -> first_non_throwing(file, [e | errors], rest)
+    end
   end
 
-  defp extract_paragraphs_texts(paragraphs) do
-    Enum.map(paragraphs, fn paragraph ->
-      :xmerl_xpath.string('w:r//text()|w:hyperlink/w:r//text()', paragraph)
-    end)
-  end
-
-  defp extract_paragraphs_texts_nodes(text_nodes) do
-    Enum.map(text_nodes, &extract_text_node_values/1)
-  end
-
-  defp extract_text_node_values(text_nodes) do
-    text_nodes
-    |> Enum.map(&extract_text_content/1)
-    |> Enum.join
-  end
-
-  defp extract_text_content({:xmlText, _, _, _, text, :text}), do: to_string(text)
-
-  defp read(file) do
+  defp read_zip(file) do
     case :zip.unzip(file, [:memory]) do
       {:ok, inner_files} ->
-        doc = inner_files
-        |> Enum.find(fn {name, _} -> name == 'word/document.xml' end)
-        |> case do {'word/document.xml', doc} -> doc end
-        |> :binary.bin_to_list
-        |> :xmerl_scan.string
+        doc =
+          inner_files
+          |> Enum.find(fn {name, _} -> name == 'word/document.xml' end)
+          |> case do
+            {'word/document.xml', doc} -> doc
+          end
 
         {:ok, doc}
+
       error ->
-        error
+        {:error, error}
+    end
+  end
+
+  defp read_zstream(file) do
+    result =
+      file
+      |> File.stream!([], 1024)
+      |> Zstream.unzip()
+      |> Enum.reduce(%{}, fn
+        {:entry, %Zstream.Entry{name: "word/document.xml"}}, state ->
+          state
+          |> Map.put(:in_document, true)
+          |> Map.put(:data, "")
+
+        {:data, :eof}, %{in_document: true, data: data} ->
+          {:ok, data}
+
+        {:data, data}, %{in_document: true, data: existing_data} = state ->
+          Map.put(state, :data, existing_data <> IO.chardata_to_string(data))
+
+        _, state ->
+          state
+      end)
+
+    if result == %{} do
+      {:error, :no_document}
+    else
+      result
     end
   end
 end
