@@ -8,7 +8,7 @@ defmodule Docxelixir do
   @doc """
   Reads all paragraphs from a given docx file
   """
-  @spec read_paragraphs(String.t()) :: [String.t()] | {:error, atom}
+  @spec read_paragraphs(String.t()) :: [String.t()] | {:error, atom, [any]}
   def read_paragraphs(file) do
     case first_non_throwing(file, [], [&read_zstream/1]) do
       {:ok, doc} ->
